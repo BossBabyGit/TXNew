@@ -78,10 +78,70 @@
       .spotlight { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
       /* Sidebar helpers (same behavior as home) */
-      .nav-item{ width:100%; display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:14px; margin:0 8px; color:#fff; transition: background .2s ease, transform .08s ease, color .2s ease; }
+      /* Labels: collapsed state (rail NOT hovered) -> take no space */
+      .nav-rail .rail:not(:hover) .nav-item > span{
+        max-width: 0;
+        opacity: 0;
+        transform: translateX(-6px);
+        overflow: hidden;
+      }
+
+      /* Labels: expanded state (rail hovered) -> reveal smoothly */
+      .nav-rail .rail:hover .nav-item > span{
+        max-width: 220px;
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      /* Row layout tweaks so icons always fit when collapsed */
+      .nav-rail .rail:not(:hover) .nav-item{
+        gap: 0;
+        justify-content: center;
+        padding-left: 8px;
+        padding-right: 8px;
+        margin: 0 4px;
+      }
+
+      /* Expanded rail gets the comfy spacing back */
+      .nav-rail .rail:hover .nav-item{
+        gap: 12px;
+        padding-left: 14px;
+        padding-right: 14px;
+        margin: 0 8px;
+      }
+
+      /* Active indicator behavior */
+      .nav-rail .rail:not(:hover) .rail-active{
+        opacity: 0.6;
+        width: 3px;
+      }
+      .nav-rail .rail:hover .rail-active{
+        opacity: 1;
+        width: 4px;
+      }
+
+      .nav-item{
+        width:100%;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        padding:10px 14px;
+        border-radius:14px;
+        margin:0 8px;
+        color:#fff;
+        transition: background .2s ease, transform .08s ease, color .2s ease;
+      }
+      .nav-item > span{
+        opacity:0;
+        transform: translateX(-6px);
+        white-space: nowrap;
+        transition: transform .2s ease, opacity .2s ease;
+        font-size:14px;
+      }
+      .group:hover .nav-item > span{ opacity:1; transform:translateX(0); }
       .nav-item:hover{ background: rgba(255,255,255,.06); }
       .nav-item.is-active{ background: linear-gradient(90deg, rgba(59,130,246,.14), rgba(124,58,237,.10)); }
-      .rail-active{ position:absolute; left:0; width:4px; height:36px; border-top-right-radius:9999px; border-bottom-right-radius:9999px; background: linear-gradient(180deg, #3b82f6, #ec4899); box-shadow: 0 0 18px rgba(59,130,246,.6); top: 72px; opacity: 1; transition: top .25s ease, height .2s ease, opacity .2s ease; }
+      .rail-active{ position:absolute; left:0; height:36px; border-top-right-radius:9999px; border-bottom-right-radius:9999px; background: linear-gradient(180deg, #3b82f6, #ec4899); box-shadow: 0 0 18px rgba(59,130,246,.6); top: 72px; transition: top .25s ease, height .2s ease, opacity .2s ease; }
 
       /* Podium */
       .podium-col { position: relative; }
