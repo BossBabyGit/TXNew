@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TxPlays — Content</title>
+
+    <!-- Poppins font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Poppins", "ui-sans-serif", "system-ui"] },
+            colors: {
+              pink: { brand: "#ec4899" },
+              blue: { brand: "#3b82f6" },
+              violet: { brand: "#7c3aed" },
+              indigo: { brand: "#4f46e5" },
+              purple: { brand: "#a855f7" },
+              discord: "#5865F2",
+              discordDark: "#4752C4",
+            },
+            dropShadow: {
+              neon: "0 0 10px rgba(59,130,246,0.75)",
+              neonPink: "0 0 10px rgba(236,72,153,0.75)",
+            },
+            boxShadow: {
+              card: "0 20px 60px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.06)",
+              ring: "0 0 0 1px rgba(255,255,255,.08)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide icons (use UMD build so window.lucide exists) -->
+    <script
+      defer
+      src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"
+    ></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg-1: #06070d; /* deep */
+        --bg-2: #0b0d14; /* base */
+        --grid: rgba(255, 255, 255, 0.06);
+        --glass: rgba(18, 22, 34, 0.55);
+        --glass-brd: rgba(255, 255, 255, 0.08);
+        --page-bg: #0b0d14;
+      }
+      html,
+      body {
+        height: 100%;
+        background: var(--bg-2);
+      }
+
+      .bg-stack {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: -1;
+      }
+      .bg-aurora,
+      .bg-grid,
+      .bg-noise {
+        position: absolute;
+        inset: 0;
+      }
+      .bg-aurora {
+        filter: blur(40px) saturate(120%);
+        mix-blend-mode: screen;
+        opacity: 0.9;
+      }
+      .bg-aurora::before,
+      .bg-aurora::after {
+        content: "";
+        position: absolute;
+        inset: -20% -20%;
+        background: conic-gradient(
+          from 90deg at 30% 30%,
+          rgba(59, 130, 246, 0.35),
+          transparent 40%,
+          rgba(124, 58, 237, 0.35) 60%,
+          rgba(236, 72, 153, 0.35) 80%,
+          transparent
+        );
+        animation: swirl 18s linear infinite;
+      }
+      .bg-aurora::after {
+        animation-duration: 28s;
+        animation-direction: reverse;
+        filter: hue-rotate(20deg);
+        opacity: 0.8;
+      }
+      @keyframes swirl {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .bg-grid {
+        background-image:
+          radial-gradient(
+            circle at 50% -20%,
+            rgba(79, 70, 229, 0.25),
+            transparent 55%
+          ),
+          radial-gradient(
+            1200px 600px at 0% 100%,
+            rgba(236, 72, 153, 0.12),
+            transparent 60%
+          ),
+          linear-gradient(to right, var(--grid) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+        background-size:
+          auto,
+          auto,
+          28px 28px,
+          28px 28px;
+        background-position: center, center, center, center;
+        mask-image: radial-gradient(
+          1200px 800px at 50% 60%,
+          black 60%,
+          transparent 100%
+        );
+      }
+
+      .bg-noise {
+        opacity: 0.05;
+      }
+      .bg-noise::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .35 0"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+        background-size: 200px 200px;
+        mix-blend-mode: overlay;
+        animation: noiseShift 1.5s steps(4) infinite;
+      }
+      @keyframes noiseShift {
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .glass {
+        backdrop-filter: blur(14px) saturate(120%);
+        -webkit-backdrop-filter: blur(14px) saturate(120%);
+        background: var(--glass);
+        border: 1px solid var(--glass-brd);
+      }
+      .glass:hover {
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+
+      .spotlight {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Sidebar styles */
+      .nav-rail .rail:not(:hover) .nav-item > span {
+        max-width: 0;
+        opacity: 0;
+        transform: translateX(-6px);
+        overflow: hidden;
+      }
+      .nav-rail .rail:hover .nav-item > span {
+        max-width: 220px;
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .nav-rail .rail:not(:hover) .nav-item {
+        gap: 0;
+        justify-content: center;
+        padding-left: 8px;
+        padding-right: 8px;
+        margin: 0 4px;
+      }
+      .nav-rail .rail:hover .nav-item {
+        gap: 12px;
+        padding-left: 14px;
+        padding-right: 14px;
+        margin: 0 8px;
+      }
+      .nav-rail .rail:not(:hover) .rail-active {
+        opacity: 0.6;
+        width: 3px;
+      }
+      .nav-rail .rail:hover .rail-active {
+        opacity: 1;
+        width: 4px;
+      }
+      .nav-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 14px;
+        margin: 0 8px;
+        color: #fff;
+        transition:
+          background 0.2s ease,
+          transform 0.08s ease,
+          color 0.2s ease;
+      }
+      .nav-item > span {
+        opacity: 0;
+        transform: translateX(-6px);
+        white-space: nowrap;
+        transition:
+          transform 0.2s ease,
+          opacity 0.2s ease;
+        font-size: 14px;
+      }
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .nav-item:active {
+        transform: translateY(1px);
+      }
+      .nav-item.is-active {
+        background: linear-gradient(
+          90deg,
+          rgba(59, 130, 246, 0.14),
+          rgba(124, 58, 237, 0.1)
+        );
+      }
+      .nav-item.is-active i {
+        filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.6));
+      }
+      .rail-active {
+        position: absolute;
+        left: 0;
+        width: 4px;
+        height: 36px;
+        border-top-right-radius: 9999px;
+        border-bottom-right-radius: 9999px;
+        background: linear-gradient(180deg, #3b82f6, #ec4899);
+        box-shadow: 0 0 18px rgba(59, 130, 246, 0.6);
+        top: 72px;
+        opacity: 1;
+        transition:
+          top 0.25s ease,
+          height 0.2s ease,
+          opacity 0.2s ease;
+      }
+      @media (min-width: 640px) {
+        header.pl-16,
+        main.pl-16,
+        footer.pl-16 {
+          padding-left: 4rem;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[radial-gradient(2000px_800px_at_50%_120%,#070910,transparent)] text-white font-sans antialiased"
+  >
+    <div class="bg-stack">
+      <div class="bg-aurora"></div>
+      <div class="bg-grid"></div>
+      <div class="bg-noise"></div>
+    </div>
+    <canvas id="spotlight" class="spotlight"></canvas>
+
+    <!-- Sidebar navigation -->
+    <aside class="nav-rail fixed left-0 top-0 h-full w-16 group z-20">
+      <div
+        class="rail glass h-full w-full flex flex-col items-center pt-6 gap-2 transition-[width] duration-200 ease-out group-hover:w-56 overflow-hidden relative"
+      >
+        <a href="index.html" class="nav-item" aria-label="Home">
+          <i data-lucide="home" class="w-6 h-6"></i><span>Home</span>
+        </a>
+        <a href="leaderboard.html" class="nav-item" aria-label="Leaderboards">
+          <i data-lucide="trophy" class="w-6 h-6"></i><span>Leaderboards</span>
+        </a>
+        <a class="nav-item" aria-label="Bonuses">
+          <i data-lucide="gift" class="w-6 h-6"></i><span>Bonuses</span>
+        </a>
+        <a class="nav-item" aria-label="Rewards">
+          <i data-lucide="coins" class="w-6 h-6"></i><span>Rewards</span>
+        </a>
+        <a class="nav-item" aria-label="Events">
+          <i data-lucide="calendar" class="w-6 h-6"></i><span>Events</span>
+        </a>
+        <a href="content.html" class="nav-item is-active" aria-label="Content">
+          <i data-lucide="video" class="w-6 h-6"></i><span>Content</span>
+        </a>
+        <span class="rail-active pointer-events-none" style="top: 312px"></span>
+      </div>
+    </aside>
+
+    <main class="relative z-10 max-w-7xl mx-auto px-6 py-24">
+      <h1 class="text-4xl font-bold mb-10">Latest Videos</h1>
+      <div
+        id="video-grid"
+        class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+      ></div>
+    </main>
+
+    <footer class="pl-16 relative z-10 py-10 text-center text-sm text-white/60">
+      &copy; <span id="year"></span> TxPlays. All rights reserved.
+    </footer>
+
+    <script>
+      const sampleVideos = [
+        {
+          title: "Sample Video 1",
+          thumb: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+          views: "1,234",
+          date: "Jan 1, 2024",
+          url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        },
+        {
+          title: "Sample Video 2",
+          thumb: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg",
+          views: "2,345",
+          date: "Feb 14, 2024",
+          url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        },
+        {
+          title: "Sample Video 3",
+          thumb: "https://img.youtube.com/vi/3JZ_D3ELwOQ/mqdefault.jpg",
+          views: "3,456",
+          date: "Mar 10, 2024",
+          url: "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
+        },
+        {
+          title: "Sample Video 4",
+          thumb: "https://img.youtube.com/vi/L_jWHffIx5E/mqdefault.jpg",
+          views: "4,567",
+          date: "Apr 5, 2024",
+          url: "https://www.youtube.com/watch?v=L_jWHffIx5E",
+        },
+        {
+          title: "Sample Video 5",
+          thumb: "https://img.youtube.com/vi/tVj0ZTS4WF4/mqdefault.jpg",
+          views: "5,678",
+          date: "May 20, 2024",
+          url: "https://www.youtube.com/watch?v=tVj0ZTS4WF4",
+        },
+        {
+          title: "Sample Video 6",
+          thumb: "https://img.youtube.com/vi/oHg5SJYRHA0/mqdefault.jpg",
+          views: "6,789",
+          date: "Jun 15, 2024",
+          url: "https://www.youtube.com/watch?v=oHg5SJYRHA0",
+        },
+      ];
+
+      function renderVideos(videos) {
+        const grid = document.getElementById("video-grid");
+        videos.forEach((v) => {
+          const title = v.title;
+          const thumb = v.thumb;
+          const views = v.views;
+          const date = v.date;
+          const url = v.url;
+          const card = document.createElement("a");
+          card.href = url;
+          card.target = "_blank";
+          card.className =
+            "glass rounded-2xl overflow-hidden hover:shadow-card transition-shadow group";
+          card.innerHTML = `
+            <div class="relative">
+              <img src="${thumb}" alt="${title}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform" />
+            </div>
+            <div class="p-4 flex flex-col gap-1">
+              <h3 class="font-semibold text-lg leading-tight">${title}</h3>
+              <div class="text-sm text-white/70">${views} views • ${date}</div>
+            </div>`;
+          grid.appendChild(card);
+        });
+        if (window.lucide && window.lucide.createIcons)
+          window.lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("year").textContent = new Date().getFullYear();
+        renderVideos(sampleVideos);
+      });
+
+      // Spotlight effect
+      const cvs = document.getElementById("spotlight");
+      const ctx = cvs.getContext("2d");
+      const DPR = Math.max(1, window.devicePixelRatio || 1);
+      function resize() {
+        cvs.width = innerWidth * DPR;
+        cvs.height = innerHeight * DPR;
+        cvs.style.width = innerWidth + "px";
+        cvs.style.height = innerHeight + "px";
+      }
+      resize();
+      addEventListener("resize", resize);
+      let mx = innerWidth / 2,
+        my = innerHeight / 2;
+      addEventListener("pointermove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+      });
+      (function frame() {
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+        const r = Math.min(innerWidth, innerHeight) * 0.25;
+        const g = ctx.createRadialGradient(
+          mx * DPR,
+          my * DPR,
+          0,
+          mx * DPR,
+          my * DPR,
+          r * DPR,
+        );
+        g.addColorStop(0, "rgba(59,130,246,0.08)");
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, cvs.width, cvs.height);
+        requestAnimationFrame(frame);
+      })();
+    </script>
+  </body>
+</html>
