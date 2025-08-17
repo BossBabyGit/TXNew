@@ -143,6 +143,20 @@
         -webkit-mask-image: radial-gradient(closest-side, #000 78%, transparent 100%);
         mask-image: radial-gradient(closest-side, #000 78%, transparent 100%);
       }
+      /* New: subtle multi-stop dark overlay on the hero image itself for nicer legibility */
+      .hero-sun::before{
+        content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+        background: linear-gradient(to bottom,
+          rgba(0,0,0,0.90) 0%,   /* 0.9 opacity at the very top */
+          rgba(0,0,0,0.80) 10%,
+          rgba(0,0,0,0.70) 20%,
+          rgba(0,0,0,0.55) 35%,
+          rgba(0,0,0,0.40) 55%,
+          rgba(0,0,0,0.25) 72%,
+          rgba(0,0,0,0.12) 86%,
+          rgba(0,0,0,0.00) 100%
+        );
+      }
       .hero-sun::after{
         content:"";
         position:absolute; inset:-2%;
@@ -151,14 +165,24 @@
         pointer-events:none;
       }
 
-      /* Smooth fade into next section */
+      /* Smooth fade into next section — softened and lengthened */
       .hero-fade {
-        position: absolute; left: 0; right: 0; bottom: -1px; height: 220px;
+        position: absolute; left: 0; right: 0; bottom: -1px; height: 320px;
         pointer-events: none; z-index: 30;
-        background: linear-gradient(to bottom, rgba(11,13,20,0) 0%,
-                                                rgba(11,13,20,.35) 45%,
-                                                rgba(11,13,20,.75) 75%,
-                                                var(--page-bg) 100%);
+        background:
+          linear-gradient(to bottom,
+            rgba(11,13,20,0.00) 0%,
+            rgba(11,13,20,0.10) 14%,
+            rgba(11,13,20,0.20) 28%,
+            rgba(11,13,20,0.35) 42%,
+            rgba(11,13,20,0.50) 58%,
+            rgba(11,13,20,0.68) 74%,
+            rgba(11,13,20,0.84) 88%,
+            var(--page-bg) 100%
+          );
+        /* feather the very bottom edge for zero banding */
+        -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0));
+                mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0));
       }
 
       /* Foreground floaters */
@@ -181,47 +205,47 @@
       /* ========== COOLER SIDEBAR ========== */
       /* --- Sidebar: collapsed vs expanded behaviors --- */
 
-/* Labels: collapsed state (rail NOT hovered) -> take no space */
-.nav-rail .rail:not(:hover) .nav-item > span{
-  max-width: 0;
-  opacity: 0;
-  transform: translateX(-6px);
-  overflow: hidden;
-}
+      /* Labels: collapsed state (rail NOT hovered) -> take no space */
+      .nav-rail .rail:not(:hover) .nav-item > span{
+        max-width: 0;
+        opacity: 0;
+        transform: translateX(-6px);
+        overflow: hidden;
+      }
 
-/* Labels: expanded state (rail hovered) -> reveal smoothly */
-.nav-rail .rail:hover .nav-item > span{
-  max-width: 220px;          /* enough for your longest label */
-  opacity: 1;
-  transform: translateX(0);
-}
+      /* Labels: expanded state (rail hovered) -> reveal smoothly */
+      .nav-rail .rail:hover .nav-item > span{
+        max-width: 220px;          /* enough for your longest label */
+        opacity: 1;
+        transform: translateX(0);
+      }
 
-/* Row layout tweaks so icons always fit when collapsed */
-.nav-rail .rail:not(:hover) .nav-item{
-  gap: 0;                     /* no space reserved for hidden label */
-  justify-content: center;    /* center the icon */
-  padding-left: 8px;
-  padding-right: 8px;
-  margin: 0 4px;              /* smaller side margins to avoid clipping */
-}
+      /* Row layout tweaks so icons always fit when collapsed */
+      .nav-rail .rail:not(:hover) .nav-item{
+        gap: 0;                     /* no space reserved for hidden label */
+        justify-content: center;    /* center the icon */
+        padding-left: 8px;
+        padding-right: 8px;
+        margin: 0 4px;              /* smaller side margins to avoid clipping */
+      }
 
-/* Expanded rail gets the comfy spacing back */
-.nav-rail .rail:hover .nav-item{
-  gap: 12px;
-  padding-left: 14px;
-  padding-right: 14px;
-  margin: 0 8px;
-}
+      /* Expanded rail gets the comfy spacing back */
+      .nav-rail .rail:hover .nav-item{
+        gap: 12px;
+        padding-left: 14px;
+        padding-right: 14px;
+        margin: 0 8px;
+      }
 
-/* Optional: make the active indicator disappear when collapsed (cleaner look) */
-.nav-rail .rail:not(:hover) .rail-active{
-  opacity: 0.6;
-  width: 3px;                 /* slimmer line when collapsed */
-}
-.nav-rail .rail:hover .rail-active{
-  opacity: 1;
-  width: 4px;
-}
+      /* Optional: make the active indicator disappear when collapsed (cleaner look) */
+      .nav-rail .rail:not(:hover) .rail-active{
+        opacity: 0.6;
+        width: 3px;                 /* slimmer line when collapsed */
+      }
+      .nav-rail .rail:hover .rail-active{
+        opacity: 1;
+        width: 4px;
+      }
 
       .nav-item{
         width: 100%;
@@ -255,6 +279,27 @@
       @media (min-width: 640px){
         header.pl-16, main.pl-16, footer.pl-16 { padding-left: 4rem; }
       }
+
+      /* ===== New: pill section tabs & subtle separators ===== */
+      .section-sep{ position: relative; }
+      .section-sep::before{
+        content:""; position:absolute; left:0; right:0; top:-1px; height:1px;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,.08), transparent);
+      }
+
+      /* ===== New: showcase card lighting on hover ===== */
+      .card-spotlight{ position: relative; overflow: hidden; }
+      .card-spotlight::after{
+        content:""; position:absolute; inset:-20%;
+        background: radial-gradient(400px 200px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.08), transparent 60%);
+        opacity: 0; transition: opacity .2s ease;
+      }
+      .card-spotlight:hover::after{ opacity: 1; }
+
+      /* Respect reduced motion */
+      @media (prefers-reduced-motion: reduce){
+        .tilt, .magnetic, .floater{ animation: none !important; transition: none !important; }
+      }
     </style>
   </head>
 
@@ -273,21 +318,21 @@
         <a href="#home" class="nav-item" aria-label="Home">
           <i data-lucide="home" class="w-6 h-6"></i><span>Home</span>
         </a>
-        <a  href="leaderboard.html" class="nav-item" aria-label="Leaderboards">
+        <a href="leaderboard.html" class="nav-item" aria-label="Leaderboards">
           <i data-lucide="trophy" class="w-6 h-6"></i><span>Leaderboards</span>
         </a>
-        <a class="nav-item" aria-label="Bonuses">
+        <a href="/bonuses" class="nav-item" aria-label="Bonuses">
           <i data-lucide="gift" class="w-6 h-6"></i><span>Bonuses</span>
         </a>
-        <a class="nav-item" aria-label="Rewards">
+        <a href="/rewards" class="nav-item" aria-label="Rewards">
           <i data-lucide="coins" class="w-6 h-6"></i><span>Rewards</span>
         </a>
-        <a class="nav-item" aria-label="Events">
+        <a href="/events" class="nav-item" aria-label="Events">
           <i data-lucide="calendar" class="w-6 h-6"></i><span>Events</span>
         </a>
-          <a href="content.html" class="nav-item" aria-label="Content">
-            <i data-lucide="video" class="w-6 h-6"></i><span>Content</span>
-          </a>
+        <a href="content.html" class="nav-item" aria-label="Content">
+          <i data-lucide="video" class="w-6 h-6"></i><span>Content</span>
+        </a>
         <!-- active indicator -->
         <span class="rail-active pointer-events-none"></span>
       </div>
@@ -299,7 +344,7 @@
         <div class="flex items-center gap-3">
           <!-- Logo Container with your image -->
           <div class="w-20 h-20 rounded-2xl grid place-items-center overflow-hidden">
-            <img src="word.png" alt="TxPlays Logo" class="w-20 h-20 object-contain">
+            <img src="word.png" alt="TxPlays Logo" class="w-20 h-20 object-contain" loading="eager">
           </div>
         </div>
 
@@ -309,11 +354,19 @@
           <span class="absolute -inset-px rounded-xl ring-1 ring-white/10"></span>
         </a>
       </div>
+      <!-- New: slim info strip -->
+      <div class="pl-4 pr-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-white/70">
+          <div class="glass rounded-xl px-3 py-2 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4"></i><span>Real player rewards — not fluff</span></div>
+          <div class="glass rounded-xl px-3 py-2 flex items-center gap-2"><i data-lucide="trophy" class="w-4 h-4"></i><span>Monthly leaderboards & live events</span></div>
+          <div class="glass rounded-xl px-3 py-2 flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4"></i><span>Verified community & secure logins</span></div>
+        </div>
+      </div>
     </header>
 
     <!-- HERO -->
     <main id="home" class="pl-16 relative z-10">
-      <section class="hero-section relative min-h-[90vh] grid place-items-center">
+      <section class="hero-section relative min-h-[92vh] grid place-items-center">
         <!-- Half-circle background image -->
         <div class="hero-sun" style="--hero-img: url('background.png')"></div>
 
@@ -369,10 +422,36 @@
         <div class="hero-fade"></div>
       </section>
 
-      <br><br><br>
+      <!-- HOW IT WORKS (new) -->
+      <section class="relative z-0 py-16 section-sep">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl sm:text-3xl font-semibold">How TRUE Rewards Works</h2>
+            <div class="hidden sm:flex gap-2 text-xs text-white/60">
+              <div class="px-2 py-1 rounded-lg glass">Fast</div>
+              <div class="px-2 py-1 rounded-lg glass">Transparent</div>
+              <div class="px-2 py-1 rounded-lg glass">Fun</div>
+            </div>
+          </div>
+          <div class="mt-8 grid gap-4 sm:grid-cols-3">
+            <div class="glass rounded-2xl p-5 card-spotlight">
+              <div class="flex items-center gap-2 text-white/80"><i data-lucide="user-plus" class="w-5 h-5"></i><span class="font-medium">1. Join</span></div>
+              <p class="mt-2 text-sm text-white/60">Connect, verify and set your nickname. You’re ready to roll in under a minute.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 card-spotlight">
+              <div class="flex items-center gap-2 text-white/80"><i data-lucide="gamepad-2" class="w-5 h-5"></i><span class="font-medium">2. Play</span></div>
+              <p class="mt-2 text-sm text-white/60">Enter leaderboards or events. Your progress updates live.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 card-spotlight">
+              <div class="flex items-center gap-2 text-white/80"><i data-lucide="gift" class="w-5 h-5"></i><span class="font-medium">3. Get Rewards</span></div>
+              <p class="mt-2 text-sm text-white/60">Claim rewards, tickets and bonuses tailored to your activity.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- SHOWCASE GRID -->
-      <section id="showcase" class="relative z-0 pb-20">
+      <section id="showcase" class="relative z-0 pb-20 section-sep">
         <div class="max-w-7xl mx-auto px-6">
           <div class="flex items-end justify-between">
             <h2 class="text-2xl sm:text-3xl font-semibold">Explore the TRUE Side</h2>
@@ -380,11 +459,15 @@
 
           <div class="mt-8 space-y-16">
             <!-- Leaderboards -->
-            <a id="leaderboards" href="leaderboard.html" class="group block rounded-3xl p-8 glass transition overflow-hidden">
+            <a id="leaderboards" href="leaderboard.html" class="group block rounded-3xl p-8 glass transition overflow-hidden card-spotlight">
               <div class="flex flex-col md:flex-row items-center gap-10">
                 <div class="md:w-1/2">
-                  <h3 class="text-2xl font-semibold">Leaderboards</h3>
-                  <p class="mt-4 text-white/60">Compete with fellow players every month and climb the leaderboard to earn massive prizes. Track your progress in real time and showcase your skills across the community.</p>
+                  <div class="inline-flex items-center gap-2 text-xs text-white/60">
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">Live</span>
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">Monthly</span>
+                  </div>
+                  <h3 class="text-2xl font-semibold mt-3">Leaderboards</h3>
+                  <p class="mt-3 text-white/60">Compete with fellow players every month and climb the leaderboard to earn massive prizes. Track your progress in real time and showcase your skills across the community.</p>
                 </div>
                 <div class="md:w-1/2">
                   <img src="leaderboard.png" alt="Leaderboards asset" class="w-full rounded-2xl object-cover" />
@@ -393,11 +476,15 @@
             </a>
 
             <!-- Bonuses -->
-            <a id="bonuses" href="/bonuses" class="group block rounded-3xl p-8 glass transition overflow-hidden">
+            <a id="bonuses" href="/bonuses" class="group block rounded-3xl p-8 glass transition overflow-hidden card-spotlight">
               <div class="flex flex-col md:flex-row-reverse items-center gap-10">
                 <div class="md:w-1/2">
-                  <h3 class="text-2xl font-semibold">Bonuses</h3>
-                  <p class="mt-4 text-white/60">Unlock exclusive promo codes and deposit offers that boost your bankroll. Our bonus hub keeps you updated with the latest deals so you never miss a chance at extra value.</p>
+                  <div class="inline-flex items-center gap-2 text-xs text-white/60">
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">Exclusive</span>
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">Updated Daily</span>
+                  </div>
+                  <h3 class="text-2xl font-semibold mt-3">Bonuses</h3>
+                  <p class="mt-3 text-white/60">Unlock exclusive promo codes and deposit offers that boost your bankroll. Our bonus hub keeps you updated with the latest deals so you never miss a chance at extra value.</p>
                 </div>
                 <div class="md:w-1/2">
                   <img src="bonuses.png" alt="Bonuses asset" class="w-full rounded-2xl object-cover" />
@@ -406,11 +493,15 @@
             </a>
 
             <!-- Rewards -->
-            <a id="rewards" href="/rewards" class="group block rounded-3xl p-8 glass transition overflow-hidden">
+            <a id="rewards" href="/rewards" class="group block rounded-3xl p-8 glass transition overflow-hidden card-spotlight">
               <div class="flex flex-col md:flex-row items-center gap-10">
                 <div class="md:w-1/2">
-                  <h3 class="text-2xl font-semibold">Rewards</h3>
-                  <p class="mt-4 text-white/60">Earn up to $4,444 in exclusive rewards while you play. Track your milestones and redeem perks designed to keep your gameplay thrilling and profitable.</p>
+                  <div class="inline-flex items-center gap-2 text-xs text-white/60">
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">Up to $4,444</span>
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">Milestones</span>
+                  </div>
+                  <h3 class="text-2xl font-semibold mt-3">Rewards</h3>
+                  <p class="mt-3 text-white/60">Earn up to $4,444 in exclusive rewards while you play. Track your milestones and redeem perks designed to keep your gameplay thrilling and profitable.</p>
                 </div>
                 <div class="md:w-1/2">
                   <img src="rewards.png" alt="Rewards asset" class="w-full rounded-2xl object-cover" />
@@ -419,11 +510,15 @@
             </a>
 
             <!-- Events -->
-            <a id="events" href="/events" class="group block rounded-3xl p-8 glass transition overflow-hidden">
+            <a id="events" href="/events" class="group block rounded-3xl p-8 glass transition overflow-hidden card-spotlight">
               <div class="flex flex-col md:flex-row-reverse items-center gap-10">
                 <div class="md:w-1/2">
-                  <h3 class="text-2xl font-semibold">Events</h3>
-                  <p class="mt-4 text-white/60">Join our community events featuring crypto prizes, real-life meetups, and unique challenges. There's always something exciting happening for members.</p>
+                  <div class="inline-flex items-center gap-2 text-xs text-white/60">
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">Crypto Prizes</span>
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">Meetups</span>
+                  </div>
+                  <h3 class="text-2xl font-semibold mt-3">Events</h3>
+                  <p class="mt-3 text-white/60">Join our community events featuring crypto prizes, real-life meetups, and unique challenges. There's always something exciting happening for members.</p>
                 </div>
                 <div class="md:w-1/2">
                   <img src="events.png" alt="Events asset" class="w-full rounded-2xl object-cover" />
@@ -432,11 +527,15 @@
             </a>
 
             <!-- Content -->
-              <a id="content" href="content.html" class="group block rounded-3xl p-8 glass transition overflow-hidden">
+            <a id="content" href="content.html" class="group block rounded-3xl p-8 glass transition overflow-hidden card-spotlight">
               <div class="flex flex-col md:flex-row items-center gap-10">
                 <div class="md:w-1/2">
-                  <h3 class="text-2xl font-semibold">Content</h3>
-                  <p class="mt-4 text-white/60">Stay up to date with my latest YouTube uploads and community highlights. Discover strategies, big wins, and behind-the-scenes action from the channel.</p>
+                  <div class="inline-flex items-center gap-2 text-xs text-white/60">
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">YouTube</span>
+                    <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10">Guides</span>
+                  </div>
+                  <h3 class="text-2xl font-semibold mt-3">Content</h3>
+                  <p class="mt-3 text-white/60">Stay up to date with my latest YouTube uploads and community highlights. Discover strategies, big wins, and behind-the-scenes action from the channel.</p>
                 </div>
                 <div class="md:w-1/2">
                   <img src="content.png" alt="Content asset" class="w-full rounded-2xl object-cover" />
@@ -446,6 +545,37 @@
           </div>
         </div>
       </section>
+
+      <!-- TRUST (new) -->
+      <section class="relative z-0 py-14 section-sep">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="flex items-end justify-between">
+            <h2 class="text-2xl sm:text-3xl font-semibold">Trusted by the Community</h2>
+          </div>
+          <div class="mt-6 grid gap-4 sm:grid-cols-3">
+            <div class="glass rounded-2xl p-5 text-sm">
+              <div class="flex items-center gap-2 text-white/80"><i data-lucide="message-circle" class="w-5 h-5"></i><span class="font-medium">Active Chat</span></div>
+              <p class="mt-2 text-white/60">Daily discussions, tips & transparency. Join and meet fellow grinders.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 text-sm">
+              <div class="flex items-center gap-2 text-white/80"><i data-lucide="badge-check" class="w-5 h-5"></i><span class="font-medium">Verified Winners</span></div>
+              <p class="mt-2 text-white/60">Payout proofs and public winner lists — we keep receipts.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 text-sm">
+              <div class="flex items-center gap-2 text-white/80"><i data-lucide="clock" class="w-5 h-5"></i><span class="font-medium">Fast Support</span></div>
+              <p class="mt-2 text-white/60">Get help via Discord within hours, not days.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sticky mini-CTA (new) -->
+      <div class="fixed bottom-6 right-6 z-40">
+        <a href="#discord-login" class="group inline-flex items-center gap-2 rounded-2xl px-4 py-3 bg-gradient-to-br from-blue-brand to-pink-brand shadow-card">
+          <i data-lucide="discord" class="w-5 h-5"></i>
+          <span class="text-sm font-semibold">Join the Discord</span>
+        </a>
+      </div>
     </main>
 
     <!-- FOOTER -->
@@ -465,7 +595,7 @@
             <a class="block hover:text-white/90" href="/bonuses">Bonuses</a>
             <a class="block hover:text-white/90" href="/rewards">Rewards</a>
             <a class="block hover:text-white/90" href="/events">Events</a>
-              <a class="block hover:text-white/90" href="content.html">Content</a>
+            <a class="block hover:text-white/90" href="content.html">Content</a>
           </div>
           <div class="space-y-2">
             <div class="text-white/60 uppercase tracking-wide text-xs">Company</div>
@@ -534,9 +664,7 @@
 
         // Click -> set active immediately (for instant feedback)
         links.forEach(link => {
-          link.addEventListener('click', () => {
-            setActive(link);
-          });
+          link.addEventListener('click', () => { setActive(link); });
         });
 
         // Initial active (home)
@@ -589,6 +717,17 @@
         group.addEventListener('pointerleave', ()=>{
           group.style.transform = 'rotateX(0) rotateY(0)';
           [...group.children].forEach(el => { el.style.transform = 'translateZ(0)'; });
+        });
+      });
+
+      // Card spotlight cursor tracking (for nicer hover lighting)
+      document.querySelectorAll('.card-spotlight').forEach(card => {
+        card.addEventListener('pointermove', (e) => {
+          const r = card.getBoundingClientRect();
+          const mx = ((e.clientX - r.left) / r.width) * 100 + '%';
+          const my = ((e.clientY - r.top) / r.height) * 100 + '%';
+          card.style.setProperty('--mx', mx);
+          card.style.setProperty('--my', my);
         });
       });
     </script>
