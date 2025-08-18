@@ -41,6 +41,51 @@
 
     <!-- Lucide icons (UMD) -->
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+  function setMenu(open) {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const btn = document.getElementById('menuBtn');
+    // Slide in/out
+    if (open) {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('pointer-events-none');
+      overlay.classList.add('opacity-100');
+      document.body.classList.add('body-lock');
+      btn?.setAttribute('aria-expanded','true');
+    } else {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('pointer-events-none');
+      overlay.classList.remove('opacity-100');
+      document.body.classList.remove('body-lock');
+      btn?.setAttribute('aria-expanded','false');
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('menuBtn');
+    const overlay = document.getElementById('overlay');
+    const sidebar = document.getElementById('sidebar');
+
+    btn?.addEventListener('click', () => {
+      const isOpen = !sidebar.classList.contains('-translate-x-full');
+      setMenu(!isOpen);
+    });
+
+    overlay?.addEventListener('click', () => setMenu(false));
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setMenu(false);
+    });
+
+    // Close after navigating (mobile)
+    sidebar.querySelectorAll('a.nav-item').forEach(a => {
+      a.addEventListener('click', () => {
+        if (window.innerWidth < 768) setMenu(false);
+      });
+    });
+  });
+</script>
+
 
     <style>
       :root {
@@ -53,6 +98,8 @@
         --page-bg: #0b0d14;
       }
       html, body { height: 100%; background: var(--bg-2); }
+
+      .body-lock { overflow: hidden; }
 
       .bg-stack { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
       .bg-aurora, .bg-grid, .bg-noise { position: absolute; inset: 0; }
@@ -187,10 +234,11 @@
     <div class="bg-stack"><div class="bg-aurora"></div><div class="bg-grid"></div><div class="bg-noise"></div></div>
     <canvas id="spotlight" class="spotlight"></canvas>
 
-    <!-- Sidebar (same rail) -->
-    <aside class="nav-rail fixed left-0 top-0 h-full w-16 group z-20">
-      <!-- NOTE: disable hover expansion on mobile; only expand on md+ -->
-      <div class="rail glass h-full w-full flex flex-col items-center pt-6 gap-2 md:transition-[width] md:duration-200 md:ease-out md:group-hover:w-56 overflow-hidden relative">
+   <aside id="sidebar"
+  class="nav-rail fixed left-0 top-0 h-full w-64 md:w-16 z-30
+         -translate-x-full md:translate-x-0 transition-transform duration-200 ease-out">
+  <div class="rail glass h-full w-full flex flex-col items-center pt-6 gap-2
+              md:transition-[width] md:duration-200 md:ease-out md:group-hover:w-56 overflow-hidden relative">
         <a href="/index.html" class="nav-item" aria-label="Home">
           <i data-lucide="home" class="w-6 h-6"></i><span>Home</span>
         </a>
@@ -210,8 +258,8 @@
           <i data-lucide="video" class="w-6 h-6"></i><span>Content</span>
         </a>
         <span class="rail-active pointer-events-none"></span>
-      </div>
-    </aside>
+  </div>
+</aside>
 
     <!-- Top bar -->
     <header class="pl-16 relative z-30">
@@ -549,3 +597,4 @@
     </script>
   </body>
 </html>
+
