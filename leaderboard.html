@@ -78,46 +78,50 @@
       .spotlight { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
       /* Sidebar helpers (same behavior as home) */
-      /* Labels: collapsed state (rail NOT hovered) -> take no space */
-      .nav-rail .rail:not(:hover) .nav-item > span{
-        max-width: 0;
-        opacity: 0;
-        transform: translateX(-6px);
-        overflow: hidden;
-      }
-
-      /* Labels: expanded state (rail hovered) -> reveal smoothly */
-      .nav-rail .rail:hover .nav-item > span{
-        max-width: 220px;
-        opacity: 1;
-        transform: translateX(0);
-      }
-
-      /* Row layout tweaks so icons always fit when collapsed */
-      .nav-rail .rail:not(:hover) .nav-item{
-        gap: 0;
-        justify-content: center;
-        padding-left: 8px;
-        padding-right: 8px;
-        margin: 0 4px;
-      }
-
-      /* Expanded rail gets the comfy spacing back */
-      .nav-rail .rail:hover .nav-item{
-        gap: 12px;
-        padding-left: 14px;
-        padding-right: 14px;
-        margin: 0 8px;
-      }
-
-      /* Active indicator behavior */
-      .nav-rail .rail:not(:hover) .rail-active{
-        opacity: 0.6;
-        width: 3px;
-      }
-      .nav-rail .rail:hover .rail-active{
-        opacity: 1;
-        width: 4px;
+      /*
+        MOBILE BEHAVIOR: keep rail collapsed (no hover expansion)
+        DESKTOP (>=768px): allow hover to expand and reveal labels
+      */
+      @media (min-width: 768px) {
+        /* Labels: collapsed state (rail NOT hovered) -> take no space */
+        .nav-rail .rail:not(:hover) .nav-item > span{
+          max-width: 0;
+          opacity: 0;
+          transform: translateX(-6px);
+          overflow: hidden;
+        }
+        /* Labels: expanded state (rail hovered) -> reveal smoothly */
+        .nav-rail .rail:hover .nav-item > span{
+          max-width: 220px;
+          opacity: 1;
+          transform: translateX(0);
+        }
+        /* Row layout tweaks so icons always fit when collapsed */
+        .nav-rail .rail:not(:hover) .nav-item{
+          gap: 0;
+          justify-content: center;
+          padding-left: 8px;
+          padding-right: 8px;
+          margin: 0 4px;
+        }
+        /* Expanded rail gets the comfy spacing back */
+        .nav-rail .rail:hover .nav-item{
+          gap: 12px;
+          padding-left: 14px;
+          padding-right: 14px;
+          margin: 0 8px;
+        }
+        /* Active indicator behavior */
+        .nav-rail .rail:not(:hover) .rail-active{
+          opacity: 0.6;
+          width: 3px;
+        }
+        .nav-rail .rail:hover .rail-active{
+          opacity: 1;
+          width: 4px;
+        }
+        /* Show labels on desktop when rail hovered */
+        .group:hover .nav-item > span{ opacity:1; transform:translateX(0); }
       }
 
       .nav-item{
@@ -138,7 +142,6 @@
         transition: transform .2s ease, opacity .2s ease;
         font-size:14px;
       }
-      .group:hover .nav-item > span{ opacity:1; transform:translateX(0); }
       .nav-item:hover{ background: rgba(255,255,255,.06); }
       .nav-item.is-active{ background: linear-gradient(90deg, rgba(59,130,246,.14), rgba(124,58,237,.10)); }
       .rail-active{ position:absolute; left:0; height:36px; border-top-right-radius:9999px; border-bottom-right-radius:9999px; background: linear-gradient(180deg, #3b82f6, #ec4899); box-shadow: 0 0 18px rgba(59,130,246,.6); top: 72px; transition: top .25s ease, height .2s ease, opacity .2s ease; }
@@ -186,7 +189,8 @@
 
     <!-- Sidebar (same rail) -->
     <aside class="nav-rail fixed left-0 top-0 h-full w-16 group z-20">
-      <div class="rail glass h-full w-full flex flex-col items-center pt-6 gap-2 transition-[width] duration-200 ease-out group-hover:w-56 overflow-hidden relative">
+      <!-- NOTE: disable hover expansion on mobile; only expand on md+ -->
+      <div class="rail glass h-full w-full flex flex-col items-center pt-6 gap-2 md:transition-[width] md:duration-200 md:ease-out md:group-hover:w-56 overflow-hidden relative">
         <a href="/index.html" class="nav-item" aria-label="Home">
           <i data-lucide="home" class="w-6 h-6"></i><span>Home</span>
         </a>
@@ -413,10 +417,6 @@
       }
 
       // ============ Data loading ============
-      // You can provide data in three ways:
-      // 1) window.LEADERBOARD_DATA = { entries:[...], prizes:{1:...,2:...,3:...}, stats:{...} }
-      // 2) Serve an API at DATA_SOURCE that returns that JSON
-      // 3) Fallback: this mock is used
       const DATA_SOURCE = '/api/leaderboard?type=weekly';
 
       const MOCK = {
@@ -460,15 +460,26 @@
         wrap.innerHTML = '';
         entries.slice(3,20).forEach((e,i)=>{
           const row = document.createElement('div');
-          row.className = 'glass rounded-2xl p-4 grid grid-cols-[40px,1fr,1fr,120px] gap-3 items-center';
+          // Mobile: 2 columns; Desktop: 4 columns like before
+          row.className = 'glass rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-[40px,1fr,1fr,120px] gap-3 items-center';
           row.innerHTML = `
-            <div class="text-white/70 font-semibold">#${e.rank}</div>
-            <div class="flex items-center gap-3">
+            <!-- Rank cell: hidden on mobile -->
+            <div class="text-white/70 font-semibold hidden sm:block">#${e.rank}</div>
+            <!-- User cell: shows rank prefix on mobile -->
+            <div class="flex items-center gap-3 col-span-1">
               <img src="crown.png" alt="profile" class="row-avatar">
-              <div class="truncate">${e.username}</div>
+              <div class="truncate">
+                <span class="sm:hidden text-white/50 mr-1">#${e.rank}</span>${e.username}
+              </div>
             </div>
-            <div class="text-white/80">${formatMoney(e.total_wagered)}</div>
-            <div class="text-right"><span class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white/10 text-sm"><i data-lucide="gift" class="w-4 h-4"></i><span>${formatMoney(e.prize||0)}</span></span></div>
+            <!-- Wager: hidden on mobile (we move it below in prize badge) -->
+            <div class="text-white/80 hidden sm:block">${formatMoney(e.total_wagered)}</div>
+            <div class="text-right col-span-1">
+              <div class="inline-flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white/10 text-sm"><i data-lucide="gift" class="w-4 h-4"></i><span>${formatMoney(e.prize||0)}</span></span>
+                <span class="text-xs text-white/60 sm:hidden mt-1">Wagered ${formatMoney(e.total_wagered)}</span>
+              </div>
+            </div>
           `;
           wrap.appendChild(row);
         });
@@ -482,9 +493,12 @@
       }
 
       function renderPrizePool(prizes){
-        q('#pp1').textContent = formatMoney(prizes[1]||0);
-        q('#pp2').textContent = formatMoney(prizes[2]||0);
-        q('#pp3').textContent = formatMoney(prizes[3]||0);
+        const e1 = document.getElementById('pp1');
+        if (e1) {
+          e1.textContent = formatMoney(prizes[1]||0);
+          document.getElementById('pp2').textContent = formatMoney(prizes[2]||0);
+          document.getElementById('pp3').textContent = formatMoney(prizes[3]||0);
+        }
       }
 
       function setRangeActive(range){
@@ -535,6 +549,3 @@
     </script>
   </body>
 </html>
-
-
-
